@@ -22,6 +22,12 @@ const renderApp = () => {
     }
   };
 
+  const MockControls = React.lazy(async (): Promise<{ default: React.ComponentType }> => {
+    if (import.meta.env.MODE !== 'mocked') return { default: () => null };
+    const { MockControlDrawer } = await import('./mocks/control-drawer');
+    return { default: MockControlDrawer };
+  });
+
   return ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
       <Suspense
@@ -35,6 +41,7 @@ const renderApp = () => {
           <HelmetProvider>
             <ConfigProvider theme={themeConfig}>
               <RouterProvider router={router} />
+              <MockControls />
             </ConfigProvider>
           </HelmetProvider>
         </ErrorBoundary>
@@ -44,10 +51,8 @@ const renderApp = () => {
 };
 
 if (import.meta.env.MODE === 'mocked') {
-  const { worker } = await import('./mocks/browser');
-  worker.start().then(() => {
-    return renderApp();
-  });
+  const { startMockWorker } = await import('./mocks/browser');
+  await startMockWorker();
 }
 
 renderApp();

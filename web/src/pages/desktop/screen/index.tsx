@@ -5,9 +5,14 @@ import { videoModeAtom } from '@/jotai/screen.ts';
 import { H264Direct } from './h264-direct.tsx';
 import { H264Webrtc } from './h264-webrtc.tsx';
 import { Mjpeg } from './mjpeg.tsx';
+import { MockScreen } from './mock-screen.tsx';
 
 export const Screen = () => {
   const videoMode = useAtomValue(videoModeAtom);
+
+  if (import.meta.env.MODE === 'mocked') {
+    return <MockScreen />;
+  }
 
   if (videoMode === 'mjpeg') {
     return <Mjpeg />;
