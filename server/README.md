@@ -62,6 +62,12 @@ turn:
     turnCred: example_cred    # The credential/password required for authorization to the TURN server
 ```
 
+Optional native OIDC login is configured under `oidc` while `authentication` remains `enable` or `disable`. See:
+
+- [OIDC and Authentik setup](../docs/oidc.md)
+- [Reverse proxy configuration](../docs/reverse-proxy.md)
+- [API authentication and sessions](../docs/api-authentication.md)
+
 ## Compile & Deploy
 
 Note: The manual steps below require a Linux x86-64 host with Go 1.25 or newer; they are not compatible with ARM, Windows or macOS. With Docker you can skip them entirely and use the containerized flow instead — the root [Makefile](../Makefile) (`make shell`) or the dev container (see "Development" in the root [README](../README.md)) — which works on any host OS; run `server/build.sh` inside the container for a release-equivalent build.

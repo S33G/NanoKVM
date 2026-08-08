@@ -4,14 +4,25 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"fmt"
+	"sync"
 	"time"
 )
 
+var jwtSecretMu sync.RWMutex
+
 // RegenerateSecretKey regenerate secret key when logout
 func RegenerateSecretKey() {
+	jwtSecretMu.Lock()
+	defer jwtSecretMu.Unlock()
 	if instance.JWT.RevokeTokensOnLogout {
 		instance.JWT.SecretKey = generateRandomSecretKey()
 	}
+}
+
+func GetJWTSecretKey() string {
+	jwtSecretMu.RLock()
+	defer jwtSecretMu.RUnlock()
+	return instance.JWT.SecretKey
 }
 
 // Generate random string for secret key.

@@ -1,3 +1,13 @@
+## Unreleased
+
+### Features
+
+* Added optional native OIDC authentication with provider discovery, authorization code flow, PKCE, session-only identities, group admission, verified-email policy, and local-login recovery
+
+### Documentation
+
+* Added Authentik setup, secure Caddy and Nginx reverse proxy examples, API session behavior, recovery guidance, and explicit OIDC authorization limitations
+
 ## 2.5.0 (2026-08-04)
 
 ### Features

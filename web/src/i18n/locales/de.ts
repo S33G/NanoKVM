@@ -29,6 +29,17 @@ const de = {
       ok: 'Ok',
       cancel: 'Abbrechen',
       loginButtonText: 'Anmelden',
+      oidcLogin: 'Continue with {{provider}}',
+      oidcDefaultProvider: 'OpenID Connect',
+      oidcOrLocal: 'or use a local account',
+      oidcUnavailable: 'Single sign-on is currently unavailable.',
+      oidcDisabled: 'Single sign-on is not enabled on this device.',
+      oidcInvalidConfig:
+        'Single sign-on is configured incorrectly. Use local login and check the server configuration.',
+      oidcLoginFailed: 'Single sign-on failed. Please try again.',
+      oidcAccessDenied: 'Single sign-on was cancelled or denied.',
+      loadingAuth: 'Checking sign-in options...',
+      noLoginMethods: 'No sign-in methods are available.',
       tips: {
         reset1:
           'Um das Passwort zurückzusetzen, drücken und halten Sie den BOOT Knopf auf dem NanoKVM für 10 Sekunden.',

@@ -18,9 +18,14 @@ func (s *Service) Login(c *gin.Context) {
 	// authentication disabled
 	conf := config.GetInstance()
 	if conf.Authentication == "disable" {
+		middleware.SetSessionCookie(c, "disabled")
 		rsp.OkRspWithData(c, &proto.LoginRsp{
 			Token: "disabled",
 		})
+		return
+	}
+	if conf.OIDC.Enabled && !conf.OIDC.AllowLocalLogin {
+		rsp.ErrRsp(c, -6, "local login is disabled")
 		return
 	}
 
@@ -57,6 +62,7 @@ func (s *Service) Login(c *gin.Context) {
 		rsp.ErrRsp(c, -3, "generate token failed")
 		return
 	}
+	middleware.SetSessionCookie(c, token)
 
 	rsp.OkRspWithData(c, &proto.LoginRsp{
 		Token: token,
@@ -71,9 +77,71 @@ func (s *Service) Logout(c *gin.Context) {
 	if conf.JWT.RevokeTokensOnLogout {
 		config.RegenerateSecretKey()
 	}
+	middleware.ClearSessionCookie(c)
 
 	var rsp proto.Response
 	rsp.OkRsp(c)
+}
+
+func (s *Service) GetPublicConfig(c *gin.Context) {
+	conf := config.GetInstance()
+	if conf.Authentication == "disable" {
+		var rsp proto.Response
+		rsp.OkRspWithData(c, &proto.AuthConfigRsp{AllowLocalLogin: true, ProviderName: conf.OIDC.ProviderName})
+		return
+	}
+	enabled, ready, errorCode := s.oidc.publicStatus()
+	allowLocalLogin := true
+	if conf.OIDC.Enabled {
+		allowLocalLogin = conf.OIDC.AllowLocalLogin
+	}
+	var rsp proto.Response
+	rsp.OkRspWithData(c, &proto.AuthConfigRsp{
+		OIDCEnabled: enabled, OIDCReady: ready, OIDCError: errorCode,
+		ProviderName: conf.OIDC.ProviderName, AllowLocalLogin: allowLocalLogin,
+	})
+}
+
+func (s *Service) GetSession(c *gin.Context) {
+	conf := config.GetInstance()
+	if conf.Authentication == "disable" {
+		var rsp proto.Response
+		rsp.OkRspWithData(c, &proto.SessionRsp{Authenticated: true, AuthSource: "disabled"})
+		return
+	}
+	cookie, err := c.Cookie("nano-kvm-token")
+	if err != nil {
+		var rsp proto.Response
+		rsp.OkRspWithData(c, &proto.SessionRsp{Authenticated: false})
+		return
+	}
+	token, err := middleware.ParseJWT(cookie)
+	if err != nil || (token.AuthSource == "oidc" && !conf.OIDC.Enabled) {
+		var rsp proto.Response
+		rsp.OkRspWithData(c, &proto.SessionRsp{Authenticated: false})
+		return
+	}
+	var rsp proto.Response
+	rsp.OkRspWithData(c, &proto.SessionRsp{
+		Authenticated: true, Username: token.Username, DisplayName: token.DisplayName, Email: token.Email,
+		AuthSource: token.AuthSource, Admin: token.Admin,
+	})
+}
+
+func (s *Service) OIDCLogin(c *gin.Context) {
+	if config.GetInstance().Authentication == "disable" {
+		s.oidc.redirectError(c, "oidc_disabled")
+		return
+	}
+	s.oidc.login(c)
+}
+
+func (s *Service) OIDCCallback(c *gin.Context) {
+	if config.GetInstance().Authentication == "disable" {
+		s.oidc.redirectError(c, "oidc_disabled")
+		return
+	}
+	s.oidc.callback(c)
 }
 
 func (s *Service) GetAccount(c *gin.Context) {

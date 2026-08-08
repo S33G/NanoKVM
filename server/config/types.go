@@ -8,6 +8,7 @@ type Config struct {
 	Logger         Logger   `yaml:"logger"`
 	Authentication string   `yaml:"authentication"`
 	JWT            JWT      `yaml:"jwt"`
+	OIDC           OIDC     `yaml:"oidc"`
 	Stun           string   `yaml:"stun"`
 	Turn           Turn     `yaml:"turn"`
 	Security       Security `yaml:"security"`
@@ -34,6 +35,26 @@ type JWT struct {
 	SecretKey            string `yaml:"secretKey"`
 	RefreshTokenDuration uint64 `yaml:"refreshTokenDuration"`
 	RevokeTokensOnLogout bool   `yaml:"revokeTokensOnLogout"`
+}
+
+type OIDC struct {
+	Enabled                bool     `yaml:"enabled"`
+	ProviderName           string   `yaml:"providerName"`
+	Issuer                 string   `yaml:"issuer"`
+	ClientID               string   `yaml:"clientId"`
+	ClientSecret           string   `yaml:"clientSecret"`
+	ClientSecretFile       string   `yaml:"clientSecretFile"`
+	RedirectURI            string   `yaml:"redirectUri"`
+	Scopes                 []string `yaml:"scopes"`
+	UsernameClaim          string   `yaml:"usernameClaim"`
+	UsernameFallbackClaims []string `yaml:"usernameFallbackClaims"`
+	DisplayNameClaim       string   `yaml:"displayNameClaim"`
+	EmailClaim             string   `yaml:"emailClaim"`
+	GroupsClaim            string   `yaml:"groupsClaim"`
+	AdminGroups            []string `yaml:"adminGroups"`
+	AllowedGroups          []string `yaml:"allowedGroups"`
+	AllowLocalLogin        bool     `yaml:"allowLocalLogin"`
+	RequireEmailVerified   bool     `yaml:"requireEmailVerified"`
 }
 
 type Turn struct {

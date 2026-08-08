@@ -11,6 +11,10 @@ func authRouter(r *gin.Engine) {
 	service := auth.NewService()
 
 	r.POST("/api/auth/login", service.Login) // login
+	r.GET("/api/auth/config", service.GetPublicConfig)
+	r.GET("/api/auth/session", service.GetSession)
+	r.GET("/api/auth/oidc/login", service.OIDCLogin)
+	r.GET("/api/auth/oidc/callback", service.OIDCCallback)
 
 	api := r.Group("/api").Use(middleware.CheckToken())
 

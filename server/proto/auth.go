@@ -21,3 +21,20 @@ type ChangePasswordReq struct {
 type IsPasswordUpdatedRsp struct {
 	IsUpdated bool `json:"isUpdated"`
 }
+
+type AuthConfigRsp struct {
+	OIDCEnabled     bool   `json:"oidcEnabled"`
+	OIDCReady       bool   `json:"oidcReady"`
+	OIDCError       string `json:"oidcError,omitempty"`
+	ProviderName    string `json:"providerName"`
+	AllowLocalLogin bool   `json:"allowLocalLogin"`
+}
+
+type SessionRsp struct {
+	Authenticated bool   `json:"authenticated"`
+	Username      string `json:"username"`
+	DisplayName   string `json:"displayName,omitempty"`
+	Email         string `json:"email,omitempty"`
+	AuthSource    string `json:"authSource"`
+	Admin         bool   `json:"admin"`
+}

@@ -91,6 +91,12 @@ Start with the guide that matches the part of NanoKVM you want to work on:
 
 > Backend compilation and runtime validation require the target toolchain or a NanoKVM device. See the module-specific guides above for the latest development workflow.
 
+### Authentication documentation
+
+- [OIDC and Authentik setup](docs/oidc.md)
+- [Reverse proxy configuration](docs/reverse-proxy.md)
+- [API authentication and sessions](docs/api-authentication.md)
+
 ### Dev container (optional)
 
 The repository ships a [Dev Container](https://containers.dev) setup (`.devcontainer/`) that layers the frontend toolchain (Node 22, pnpm 11) on top of the release builder image (RISC-V cross toolchain, Go, MaixCDK), so one container covers Go, C support-layer and web development. It is a convenience for IDE users; the `make` targets in the repository root remain the canonical CLI workflow.

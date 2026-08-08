@@ -1,8 +1,8 @@
 package vm
 
 import (
+	"NanoKVM-Server/middleware"
 	"encoding/json"
-	"net/http"
 	"os"
 	"os/exec"
 	"time"
@@ -26,9 +26,7 @@ type WinSize struct {
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  maxMessageSize,
 	WriteBufferSize: maxMessageSize,
-	CheckOrigin: func(r *http.Request) bool {
-		return true
-	},
+	CheckOrigin:     middleware.CheckWebSocketOrigin,
 }
 
 func (s *Service) Terminal(c *gin.Context) {

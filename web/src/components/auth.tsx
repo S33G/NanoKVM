@@ -1,12 +1,39 @@
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
+import { Spin } from 'antd';
 import { Navigate } from 'react-router-dom';
 
-import { existToken } from '@/lib/cookie.ts';
+import { getSession } from '@/api/auth.ts';
 
 export const ProtectedRoute = ({ children }: { children: ReactNode }) => {
-  const hasToken = existToken();
+  const [authenticated, setAuthenticated] = useState<boolean | null>(null);
 
-  if (!hasToken) {
+  useEffect(() => {
+    let active = true;
+
+    getSession()
+      .then((rsp) => {
+        if (active) {
+          setAuthenticated(rsp.code === 0 && rsp.data.authenticated);
+        }
+      })
+      .catch(() => {
+        if (active) setAuthenticated(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  if (authenticated === null) {
+    return (
+      <div className="flex h-screen w-screen items-center justify-center" role="status">
+        <Spin size="large" />
+      </div>
+    );
+  }
+
+  if (!authenticated) {
     return <Navigate to={'/auth/login'} replace />;
   }
 

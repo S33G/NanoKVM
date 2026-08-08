@@ -1,7 +1,9 @@
 package auth
 
-type Service struct{}
+type Service struct {
+	oidc *oidcService
+}
 
 func NewService() *Service {
-	return &Service{}
+	return &Service{oidc: newOIDCService()}
 }

@@ -57,7 +57,13 @@ func readByFile() error {
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath("/etc/kvm/")
 
-	return viper.ReadInConfig()
+	if err := viper.ReadInConfig(); err != nil {
+		return err
+	}
+	if err := os.Chmod(ConfigurationFile, 0o600); err != nil {
+		log.Printf("failed to restrict configuration permissions: %s", err)
+	}
+	return nil
 }
 
 func readByDefault() error {
@@ -78,9 +84,9 @@ func create() {
 		err  error
 	)
 
-	_ = os.MkdirAll("/etc/kvm", 0o644)
+	_ = os.MkdirAll("/etc/kvm", 0o755)
 
-	file, err = os.OpenFile("/etc/kvm/server.yaml", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0o644)
+	file, err = os.OpenFile("/etc/kvm/server.yaml", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0o600)
 	if err != nil {
 		log.Printf("open config failed: %s", err)
 		return

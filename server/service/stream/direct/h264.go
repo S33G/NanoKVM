@@ -1,8 +1,8 @@
 package direct
 
 import (
+	"NanoKVM-Server/middleware"
 	"NanoKVM-Server/service/stream"
-	"net/http"
 	"strconv"
 	"time"
 
@@ -17,9 +17,7 @@ var (
 	streamer = newStreamer()
 	upgrader = websocket.Upgrader{
 		WriteBufferSize: 256 * 1024,
-		CheckOrigin: func(r *http.Request) bool {
-			return true
-		},
+		CheckOrigin:     middleware.CheckWebSocketOrigin,
 	}
 )
 

@@ -18,7 +18,7 @@ export const Logout = () => {
       }
 
       removeToken();
-      navigate('/auth/login');
+      navigate('/auth/login', { replace: true });
     });
   }
 
